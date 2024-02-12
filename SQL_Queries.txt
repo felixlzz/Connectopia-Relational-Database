@@ -1,0 +1,85 @@
+-=-=-=- INSERT -=-=-=-
+
+
+Insert: INSERT INTO Event  values (‘:location’, :day, ‘:eventName’, ‘:username’);
+
+
+-=-=-=- DELETE -=-=-=-
+
+DELETE FROM Feed
+WHERE title = ':title';
+
+
+
+-=-=-=- UPDATE -=-=-=-
+
+UPDATE Event SET name = :newEventName, username = :newUsername WHERE location = :location AND eday = :eventDate;
+
+
+
+-=-=-=- SELECT -=-=-=-
+
+SELECT * FROM EVENT
+WHERE location LIKE ':location' AND name LIKE ':name' AND username LIKE ':username';
+
+- Put "%" if not specified
+
+
+-=-=-=- PROJECTION -=-=-=-
+
+SELECT table_name
+FROM user_tables
+
+SELECT table_name, column_name
+FROM USER_TAB_COLUMNS
+WHERE table_name = ':table'
+
+SELECT :selection FROM :table
+
+
+-=-=-=- JOIN -=-=-=-
+
+SELECT username, text, mdate
+FROM appuser u, Message m,
+WHERE u.username = m.username AND mdate >= :date;
+
+
+-=-=-=- GROUP BY -=-=-=-
+
+SELECT name, count(*)
+FROM UserBelongs
+GROUP BY name
+
+
+-=-=-=- GROUP BY HAVING -=-=-=-
+
+SELECT u.username, SUM(c.score)
+FROM appuser u, PostComment c
+WHERE u.username = c.username
+GROUP BY u.username
+HAVING SUM(c.score) > 100;
+
+
+-=-=-=- GROUP BY HAVING NESTED -=-=-=-
+
+SELECT u.username, AVG(p.score)
+FROM appuser u, Post p
+WHERE u.username = p.username
+GROUP BY u.username
+HAVING AVG(p.score) > (SELECT AVG(score) FROM Post);
+
+
+-=-=-=- DIVISION -=-=-=-
+
+SELECT u.username
+FROM appuser u
+WHERE NOT EXISTS (
+	SELECT p.pid
+	FROM post p
+	WHERE NOT EXISTS (
+		SELECT u.username
+		FROM PostComment c
+		WHERE p.pid = c.pid AND u.username = c.username));
+		
+		
+- Finds users who have commented on every post
